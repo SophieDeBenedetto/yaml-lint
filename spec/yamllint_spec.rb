@@ -1,5 +1,6 @@
 require 'spec_helper'
 require_relative '../lib/yaml-lint'
+require 'pry'
 
 FIXTURES_PATH = File.dirname(__FILE__) + '/fixtures/'
 
@@ -18,6 +19,20 @@ describe 'YamlLint' do
     it 'checks both files in a dir' do
       lint = YamlLint.new(FIXTURES_PATH)
       expect(lint.do_lint).to be > 0
+    end
+  end
+
+  describe 'validate_whitespace_for_learn' do
+    it 'is valid with two whitespaces before every attribute' do
+      file = FIXTURES_PATH + 'learn.yaml' 
+      lint = YamlLint.new(file)
+      expect(lint.validate_whitespace_for_learn(file)).to be true
+    end 
+
+    it 'is invalid with four whitespaces before every attribute' do 
+      file = FIXTURES_PATH + 'bad_learn.yaml'
+      lint = YamlLint.new(file)
+      expect(lint.validate_whitespace_for_learn(file)).to be false
     end
   end
 
