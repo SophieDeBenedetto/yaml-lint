@@ -34,6 +34,7 @@ class YamlLint
   include Logging
 
   def initialize(file, config={})
+    # binding.pry
     @file = file
     @config = config
     @config[:quiet] = true if @config[:veryquiet]
@@ -41,13 +42,16 @@ class YamlLint
   end
 
   def do_lint
+    # binding.pry
     unless File.exists? @file
       error "File #{@file} does not exist"
       return 0
     else
       if File.directory? @file
+        # binding.pry
         return self.parse_directory @file
       else
+        # binding.pry
         return self.parse_file @file
       end
     end
@@ -78,4 +82,23 @@ class YamlLint
       return 0
     end
   end
+
+  def validate_whitespace_for_learn(file)
+    f = File.read(file)
+    lines = f.split("\n")
+    attributes = lines.select { |line| line.include?("-") }
+    valid = true
+    attributes.each do |attribute| 
+      if attribute[0..3] == "  - "
+        valid = true
+      else
+        valid = false
+      end
+    end
+    valid 
+  end 
+
+
+
+
 end
