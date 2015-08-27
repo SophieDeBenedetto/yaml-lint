@@ -42,44 +42,45 @@ class YamlLint
   end
 
   def do_lint
-    # binding.pry
     unless File.exists? @file
       error "File #{@file} does not exist"
       return 0
     else
       if File.directory? @file
-        # binding.pry
         return self.parse_directory @file
       else
-        # binding.pry
         return self.parse_file @file
       end
     end
   end
 
   def parse_directory(directory)
-    Dir.glob("#{directory}/*").inject(0) do |mem, fdir|
-      if File.directory? fdir
-        mem + parse_directory(fdir)
-      else
-        mem + parse_file(fdir)
-      end
+
+    unless Dir.entries(directory).include?(".learn")
+      error "missing .learn file"
+      return 0
+    else
+      @file = "#{directory}/.learn"
+      self.parse_file @file 
     end
   end
 
   def parse_file(file)
-    if (not File.extname(file) =~ /.(yaml|yml)$/) && (not @config[:nocheckfileext])
-      error "The extension of the file #{file} should be .yaml or .yml"
-      return 1
-    end
     begin
       YAML.load_file(file)
     rescue Exception => err
       error "File : #{file}, error: #{err}"
       return 1
     else
-      info "File : #{file}, Syntax OK"
-      return 0
+      # binding.pry
+      if validate_whitespace_for_learn(file)
+        # binding.pry
+        info "File : #{file}, Syntax OK"
+        return 0
+      else 
+        error "Invalid whitespace. Every line with a '-' needs to start with two whitespaces"
+        return 1
+      end
     end
   end
 
@@ -89,16 +90,9 @@ class YamlLint
     attributes = lines.select { |line| line.include?("-") }
     valid = true
     attributes.each do |attribute| 
-      if attribute[0..3] == "  - "
-        valid = true
-      else
-        valid = false
-      end
+      valid = false unless attribute[0..3] == "  - "
     end
     valid 
   end 
-
-
-
 
 end

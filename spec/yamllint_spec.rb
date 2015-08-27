@@ -17,6 +17,7 @@ describe 'YamlLint' do
     end
 
     it 'checks both files in a dir' do
+      # binding.pry
       lint = YamlLint.new(FIXTURES_PATH)
       expect(lint.do_lint).to be > 0
     end

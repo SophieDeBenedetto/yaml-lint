@@ -38,7 +38,6 @@ puts "Checking the content of #{ARGV}" unless options[:quiet]
 failed = 0
 
 ARGV.each do|file|
-  binding.pry
   lint = YamlLint.new(file, options)
   failed = failed + lint.do_lint
 end

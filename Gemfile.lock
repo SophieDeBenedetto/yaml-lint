@@ -45,6 +45,3 @@ PLATFORMS
 DEPENDENCIES
   coveralls
   pry
-
-BUNDLED WITH
-   1.10.2
